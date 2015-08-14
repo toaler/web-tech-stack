@@ -3,6 +3,5 @@ jdk:
 - oraclejdk8
 deploy:
   provider: heroku
-  app: web-tech-stack
   api_key:
     secure: TvvfymMb1pd7o2f1Mw+Sw2yJkCw5W4PbDK4XWkM28q2gIUgwIsqoWKVMGMXEzXES59s18Y4NgiYBxgVeHwErr5KrGC/vE9OYeWrMDekQ2015m7n8ZpcAEScrAlCyUufGl8GjXUBb0Vekz9jQIyW8TTV3zSEEErVrASb0sb9MVQ1xEMs6PrN6Ri96uy4SgF/a0FIep4ILyj6ZYO+yY0clqBvez0UJzIegtGZ/6OjRKAYo+HzeNo3TiLI7c0tBdLQ3HpLH+IyCHeRZs6abLHKhdyI/XRBw3I515rrUn93lMlMTzEIC7ZjngDXbYmtSsD9NZ+3Ku0WwqIn+5/3h5/oMGAba/fzMjlLigPRmA2HG5TkiB6z/B8p75MWc5MefKhoaOao0NTXX5lmztsYDVlLIi/w5H9sb3fb3b9nYtROvNFUuBThR+LYvrOUD/WTan5/HM2W/pUB+sOfjhJzcg1c2eaxuxzro6H+QppH/rbNUy7cLz+GS4nI8Go/CJ/fBLPzFWua6HSBM10txPKqGvc3o2DE9gchAGKVeZes1bI0xlK2WkMTpE4UShHndlF8zGkHC8dn7ijMcSmIsNtCosQaRzwcTWeRU/l//Ha07lbUB/xj1mIBw0yRUo4Y7BBDVUbwy/UGksXU1KMCw1CkRVcElXgUtVzdEyP9GRjfgg/l6l+k=
