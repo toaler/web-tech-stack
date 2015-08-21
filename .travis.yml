@@ -6,3 +6,19 @@ deploy:
   app: web-tech-stack
   api_key:
     secure: TvvfymMb1pd7o2f1Mw+Sw2yJkCw5W4PbDK4XWkM28q2gIUgwIsqoWKVMGMXEzXES59s18Y4NgiYBxgVeHwErr5KrGC/vE9OYeWrMDekQ2015m7n8ZpcAEScrAlCyUufGl8GjXUBb0Vekz9jQIyW8TTV3zSEEErVrASb0sb9MVQ1xEMs6PrN6Ri96uy4SgF/a0FIep4ILyj6ZYO+yY0clqBvez0UJzIegtGZ/6OjRKAYo+HzeNo3TiLI7c0tBdLQ3HpLH+IyCHeRZs6abLHKhdyI/XRBw3I515rrUn93lMlMTzEIC7ZjngDXbYmtSsD9NZ+3Ku0WwqIn+5/3h5/oMGAba/fzMjlLigPRmA2HG5TkiB6z/B8p75MWc5MefKhoaOao0NTXX5lmztsYDVlLIi/w5H9sb3fb3b9nYtROvNFUuBThR+LYvrOUD/WTan5/HM2W/pUB+sOfjhJzcg1c2eaxuxzro6H+QppH/rbNUy7cLz+GS4nI8Go/CJ/fBLPzFWua6HSBM10txPKqGvc3o2DE9gchAGKVeZes1bI0xlK2WkMTpE4UShHndlF8zGkHC8dn7ijMcSmIsNtCosQaRzwcTWeRU/l//Ha07lbUB/xj1mIBw0yRUo4Y7BBDVUbwy/UGksXU1KMCw1CkRVcElXgUtVzdEyP9GRjfgg/l6l+k=
+
+env:
+  global:
+   # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
+   #   via the "travis encrypt" command using the project repo's public key
+   - secure: "FH4AuB+fYdRNw3hj0a5JFfnoslQlRozXrNuVqRUxNOLFe1uLBiZKRhLzz+R3IQUhgfKlXuQ+zmG4ODCz/ND3GhBOsZIPuNJiETL4lkzM7QTbVIiuXd542L0DdBltjWxilA1Yxq1G1ef8O3bAnl+XFKGt+HETFbxtTnCOP+2PamGGrslQ0pR8Ebqko+SnTE4EzxcN/vfsoeExLjJ/HO1mrEOGGptJpVDZq/fs3HvL8QnRnaSLPYM3/dheYiG2u77aQop4KIMnsVu3MLa3NOspw6+geT4Wg4ceVT9UJQfBFiHcl7kU+9AiAgjPwmxt96bcFNHGLIjsgRmyOlOB+H2inMxpOzmijKcXkh1CiKW7NzZQUDQG4BkNlT8uRuaKGdbzriyYbSZ0IpxGacRJ1eynpnlHyUZjXgn6wGUa8viUao0J3Dtc9IhdzkqgbC8rZK0nbtx/c7OFDxT4epmcC7EJAkcmO49sL7qOiEob9cf9QkfarW4NbSaPmA4GOw4QpPN4AsQVuqKFs2lBos14vGEEXeIIQZ/BAfXPsSwdcrDGyt/hnn9oytUhLbgGySnSaj0HdeEyhKd/0xbWk8PqpCAUvLifrB5AyS77UBbHg/zN0VtmDxnoAn6d/brd3tR4CkWW0Dgv0KuJireI7hjV5j4+R+AVrdYNu0KhYy3vpoZQEO0="
+
+addons:
+  coverity_scan:
+    project:
+      name: "toaler/web-tech-stack"
+      description: "Web Tech Stack"
+    notification_email: brian.toal@gmail.com
+    build_command_prepend: "mvn clean"
+    build_command:   "mvn -DskipTests=true compile"
+    branch_pattern: master
