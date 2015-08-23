@@ -16,7 +16,7 @@ public class HelloServlet extends HttpServlet {
             throws ServletException, IOException {
         ServletOutputStream out = resp.getOutputStream();
         
-        out.write("Hello Toaler".getBytes());
+        out.write("Hello Toaler".getBytes("UTF-8"));
         out.flush();
         out.close();
     }
