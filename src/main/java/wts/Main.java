@@ -30,7 +30,6 @@ public class Main
         context.setDescriptor(webdir);
         context.setResourceBase("/");
        
-        // todo force downloads of source jars
         context.setConfigurations(new Configuration[] 
         { 
             new AnnotationConfiguration(),
