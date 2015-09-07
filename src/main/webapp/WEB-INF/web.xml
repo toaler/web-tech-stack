@@ -2,7 +2,7 @@
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns="http://java.sun.com/xml/ns/javaee"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_1.xsd"
-	metadata-complete="false" version="3.0">
+	metadata-complete="false" version="3.1">
 
 	<welcome-file-list>
 		<welcome-file>index.html</welcome-file>
@@ -25,9 +25,9 @@
 	<servlet-mapping>
 		<servlet-name>sync</servlet-name>
 		<url-pattern>/sync</url-pattern>
-	</servlet-mapping>	
-	
-		<servlet>
+	</servlet-mapping>
+
+	<servlet>
 		<servlet-name>async</servlet-name>
 		<servlet-class>wts.servlet.Async</servlet-class>
 	</servlet>
