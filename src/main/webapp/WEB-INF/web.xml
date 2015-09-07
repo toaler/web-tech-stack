@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
-	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
-	version="2.5">
+	xmlns="http://java.sun.com/xml/ns/javaee"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_1.xsd"
+	metadata-complete="false" version="3.0">
 
 	<welcome-file-list>
 		<welcome-file>index.html</welcome-file>
@@ -10,13 +10,29 @@
 
 	<servlet>
 		<servlet-name>hello</servlet-name>
-		<servlet-class>wts.HelloServlet</servlet-class>
+		<servlet-class>wts.servlet.Hello</servlet-class>
 	</servlet>
-
 	<servlet-mapping>
 		<servlet-name>hello</servlet-name>
 		<url-pattern>/hello</url-pattern>
 	</servlet-mapping>
 
+	<servlet>
+		<servlet-name>sync</servlet-name>
+		<servlet-class>wts.servlet.Sync</servlet-class>
+	</servlet>
 
+	<servlet-mapping>
+		<servlet-name>sync</servlet-name>
+		<url-pattern>/sync</url-pattern>
+	</servlet-mapping>	
+	
+		<servlet>
+		<servlet-name>async</servlet-name>
+		<servlet-class>wts.servlet.Async</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>async</servlet-name>
+		<url-pattern>/async</url-pattern>
+	</servlet-mapping>
 </web-app>
