@@ -11,6 +11,7 @@
 	<servlet>
 		<servlet-name>hello</servlet-name>
 		<servlet-class>wts.servlet.Hello</servlet-class>
+		<async-supported>true</async-supported>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>hello</servlet-name>
@@ -30,9 +31,14 @@
 	<servlet>
 		<servlet-name>async</servlet-name>
 		<servlet-class>wts.servlet.Async</servlet-class>
+		<async-supported>true</async-supported>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>async</servlet-name>
 		<url-pattern>/async</url-pattern>
 	</servlet-mapping>
+
+	<listener>
+		<listener-class>wts.listener.Work</listener-class>
+	</listener>
 </web-app>
