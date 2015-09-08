@@ -6,7 +6,7 @@
 	<version>1-SNAPSHOT</version>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<jetty-version>9.2.10.v20150310</jetty-version>
+		<jetty-version>9.3.3.v20150827</jetty-version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -22,6 +22,11 @@
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-annotations</artifactId>
+			<version>${jetty-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.jetty.websocket</groupId>
+			<artifactId>javax-websocket-server-impl</artifactId>
 			<version>${jetty-version}</version>
 		</dependency>
 	</dependencies>
