@@ -11,6 +11,8 @@ import org.eclipse.jetty.webapp.MetaInfConfiguration;
 import org.eclipse.jetty.webapp.WebAppContext;
 import org.eclipse.jetty.webapp.WebInfConfiguration;
 import org.eclipse.jetty.webapp.WebXmlConfiguration;
+
+import com.google.common.io.Files;
  
 /**
  * ServerWithAnnotations
@@ -22,12 +24,8 @@ public class Main
         int port = 8080;
         Server server = new Server(port);
         
-        String webdir = Main.class.getClassLoader().getResource("WEB-INF/web.xml").toExternalForm();
-        System.out.println("webdir = " + webdir);
-        
         
         WebAppContext context = new WebAppContext();
-        context.setDescriptor(webdir);
         context.setResourceBase("/");
        
         context.setConfigurations(new Configuration[] 
@@ -43,10 +41,16 @@ public class Main
         });
 
         context.setContextPath("/");
+        
+        
+        String url = Main.class.getProtectionDomain().getCodeSource().getLocation().toString();
+        String jarRegex = ".*" + Files.getNameWithoutExtension(url) + "\\." + Files.getFileExtension(url);
+        context.setAttribute("org.eclipse.jetty.server.webapp.ContainerIncludeJarPattern", jarRegex);        
         context.setParentLoaderPriority(true);
         server.setHandler(context);
         server.start();
         server.dump(System.err);
         server.join();
     }
+    
 }
