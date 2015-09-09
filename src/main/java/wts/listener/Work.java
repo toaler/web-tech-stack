@@ -8,7 +8,9 @@ import javax.servlet.AsyncContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.ServletResponse;
+import javax.servlet.annotation.WebListener;
 
+@WebListener
 public class Work implements ServletContextListener {
 	public static final BlockingQueue<AsyncContext> queue = new LinkedBlockingQueue<>();
 
