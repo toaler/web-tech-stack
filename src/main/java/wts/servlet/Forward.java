@@ -53,7 +53,16 @@ import javax.servlet.http.HttpServletResponse;
  * that the request won't be resubmitted when the user refreshed the reqeust.
  * <p>
  * <p>
- * ADD CODE SNIPPET
+ * <code>
+User user = userDAO.find(username, password);<p>
+if (user != null) {<p>
+    request.getSession().setAttribute("user", user); // Login user.<p>
+    response.sendRedirect("home"); // Redirects to http://example.com/context/home after successful login.<p>
+} else {<p>
+    request.setAttribute("error", "Unknown login, please try again."); // Set error.<p>
+    request.getRequestDispatcher("/WEB-INF/login.jsp").forward(request, response); // Forward to same page so that you can display error.<p>
+}}<p>
+</code>
  * <p>
  * A redirect thus instructs the client to fire a new GET request on the given
  * URL. Refreshing the request would then only refresh the redirected request
