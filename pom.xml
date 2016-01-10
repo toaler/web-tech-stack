@@ -140,7 +140,7 @@
 					<arguments>
 						<argument>-Xbootclasspath/p:target/libs/alpn-boot-${alpn-boot-version}.jar</argument>
 						<argument>-jar</argument>
-						<argument>target/${artifactId}-${version}.jar</argument>
+						<argument>target/${project.artifactId}-${project.version}.jar</argument>
 					</arguments>
 				</configuration>
 			</plugin>
