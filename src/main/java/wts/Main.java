@@ -6,7 +6,6 @@ import org.eclipse.jetty.alpn.ALPN;
 import org.eclipse.jetty.alpn.server.ALPNServerConnectionFactory;
 import org.eclipse.jetty.annotations.AnnotationConfiguration;
 import org.eclipse.jetty.http2.HTTP2Cipher;
-import org.eclipse.jetty.http2.server.HTTP2CServerConnectionFactory;
 import org.eclipse.jetty.http2.server.HTTP2ServerConnectionFactory;
 import org.eclipse.jetty.plus.webapp.EnvConfiguration;
 import org.eclipse.jetty.plus.webapp.PlusConfiguration;
