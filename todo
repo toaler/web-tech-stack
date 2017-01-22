@@ -1,3 +1,4 @@
 - add logger
 - add PMD
 - get mvn to generate keystore
+* Have app server static content
