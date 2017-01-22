@@ -4,4 +4,4 @@
 target
 META-INF
 
-src/main/resources/ssl/keystore
+./src/main/resources/ssl/keystore
