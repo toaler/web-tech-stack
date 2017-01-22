@@ -3,4 +3,5 @@
 .settings
 target
 META-INF
+
 src/main/resources/ssl/keystore
