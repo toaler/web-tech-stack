@@ -1,5 +1,6 @@
 package wts;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.URL;
@@ -8,9 +9,7 @@ import java.util.Properties;
 
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
-import org.apache.curator.framework.state.ConnectionState;
 import org.apache.curator.retry.RetryNTimes;
-import org.apache.curator.x.discovery.ServiceCache;
 import org.apache.curator.x.discovery.ServiceDiscovery;
 import org.apache.curator.x.discovery.ServiceDiscoveryBuilder;
 import org.apache.curator.x.discovery.ServiceInstance;
@@ -41,6 +40,7 @@ import org.eclipse.jetty.webapp.WebXmlConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Joiner;
 import com.google.common.io.Files;
 
 public class Main {
@@ -135,10 +135,10 @@ public class Main {
 
 		server.start();
 
-//		server.dump(System.err);
+		// server.dump(System.err);
 
-		try (CuratorFramework curatorFramework = CuratorFrameworkFactory.newClient(System.getProperty("zookeeper.hosts"),
-				new RetryNTimes(3, 1000))) {
+		try (CuratorFramework curatorFramework = CuratorFrameworkFactory
+				.newClient(System.getProperty("zookeeper.hosts"), new RetryNTimes(3, 1000))) {
 			curatorFramework.start();
 
 			ServiceInstance<String> serviceInstance;
@@ -149,13 +149,25 @@ public class Main {
 			try (ServiceDiscovery<String> sd = ServiceDiscoveryBuilder.<String>builder(String.class)
 					.basePath("/service-discovery").client(curatorFramework).thisInstance(serviceInstance).build()) {
 
+				Runtime.getRuntime().addShutdownHook(new Thread() {
+					public void run() {
+						if (sd != null) {
+							try {
+								sd.close();
+							} catch (IOException e) {
+								System.err
+										.println("Failed to close service discover due to " + e.getMessage() + " cause="
+												+ e.getCause() + " stack=" + Joiner.on(",").join(e.getStackTrace()));
+							}
+						}
+					}
+				});
 
 				sd.start();
 				sd.queryForInstances("wts").stream().forEach((e) -> logger.info("found = " + e));
-				
+
 				server.join();
 			}
-
 
 		}
 
