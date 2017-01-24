@@ -1,7 +1,22 @@
 package wts;
 
+import java.io.InputStream;
+import java.net.InetAddress;
 import java.net.URL;
+import java.net.UnknownHostException;
+import java.util.Properties;
 
+import org.apache.curator.framework.CuratorFramework;
+import org.apache.curator.framework.CuratorFrameworkFactory;
+import org.apache.curator.framework.state.ConnectionState;
+import org.apache.curator.retry.RetryNTimes;
+import org.apache.curator.x.discovery.ServiceCache;
+import org.apache.curator.x.discovery.ServiceDiscovery;
+import org.apache.curator.x.discovery.ServiceDiscoveryBuilder;
+import org.apache.curator.x.discovery.ServiceInstance;
+import org.apache.curator.x.discovery.ServiceType;
+import org.apache.curator.x.discovery.UriSpec;
+import org.apache.curator.x.discovery.details.ServiceCacheListener;
 import org.eclipse.jetty.alpn.ALPN;
 import org.eclipse.jetty.alpn.server.ALPNServerConnectionFactory;
 import org.eclipse.jetty.annotations.AnnotationConfiguration;
@@ -28,7 +43,22 @@ import org.eclipse.jetty.webapp.WebXmlConfiguration;
 import com.google.common.io.Files;
 
 public class Main {
+	private static String PROPERTY_FILE = "wts.properties";
+
 	public static void main(String[] args) throws Exception {
+
+		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+		InputStream input = classLoader.getResourceAsStream(PROPERTY_FILE);
+
+		if (input == null) {
+			System.err.println("Couldn't find " + PROPERTY_FILE);
+		}
+		Properties properties = new Properties();
+		properties.load(input);
+
+		properties.entrySet().stream()
+				.forEach((entry) -> System.setProperty(entry.getKey().toString(), entry.getValue().toString()));
+
 		Server server = new Server();
 
 		int httpPort = 8080;
@@ -103,8 +133,31 @@ public class Main {
 		server.setHandler(context);
 
 		server.start();
-                server.dump(System.err);
-		server.join();
+
+		server.dump(System.err);
+
+		try (CuratorFramework curatorFramework = CuratorFrameworkFactory.newClient(System.getProperty("zookeeper.hosts"),
+				new RetryNTimes(3, 1000))) {
+			curatorFramework.start();
+
+			ServiceInstance<String> serviceInstance;
+			serviceInstance = ServiceInstance.<String>builder().uriSpec(new UriSpec("{scheme}://{address}:{port}"))
+					.address(InetAddress.getLocalHost().getHostAddress()).port(httpPort).name("wts")
+					.serviceType(ServiceType.DYNAMIC).build();
+
+			try (ServiceDiscovery<String> sd = ServiceDiscoveryBuilder.<String>builder(String.class)
+					.basePath("/service-discovery").client(curatorFramework).thisInstance(serviceInstance).build()) {
+
+
+				sd.start();
+				sd.queryForInstances("wts").stream().forEach((e) -> System.out.println("found = " + e));
+				
+				server.join();
+			}
+
+
+		}
+
 	}
 
 }
