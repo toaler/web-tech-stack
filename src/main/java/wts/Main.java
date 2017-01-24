@@ -1,10 +1,8 @@
 package wts;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.URL;
-import java.net.UnknownHostException;
 import java.util.Properties;
 
 import org.apache.curator.framework.CuratorFramework;
@@ -141,10 +139,24 @@ public class Main {
 				.newClient(System.getProperty("zookeeper.hosts"), new RetryNTimes(3, 1000))) {
 			curatorFramework.start();
 
+			final String address = InetAddress.getLocalHost().getHostAddress();
 			ServiceInstance<String> serviceInstance;
 			serviceInstance = ServiceInstance.<String>builder().uriSpec(new UriSpec("{scheme}://{address}:{port}"))
-					.address(InetAddress.getLocalHost().getHostAddress()).port(httpPort).name("wts")
-					.serviceType(ServiceType.DYNAMIC).build();
+					.address(address).port(httpPort).name("wts").serviceType(ServiceType.DYNAMIC).build();
+
+			final String basePath = "/service-discovery";
+			ServiceDiscovery<String> s = ServiceDiscoveryBuilder.<String>builder(String.class).basePath(basePath)
+					.client(curatorFramework).build();
+			s.queryForInstances("wts").stream().forEach((i) -> {
+				if (i.getAddress().equals(address) && i.getPort() == httpPort) {
+					try {
+						curatorFramework.delete().forPath(basePath + "/" + i.getName() + "/" + i.getId());
+						logger.info("Unregistered left over entry in service discover " + i);
+					} catch (Exception e) {
+						logger.error("Couldn't unregister " + s, e);
+					}
+				}
+			});
 
 			try (ServiceDiscovery<String> sd = ServiceDiscoveryBuilder.<String>builder(String.class)
 					.basePath("/service-discovery").client(curatorFramework).thisInstance(serviceInstance).build()) {
