@@ -16,7 +16,6 @@ import org.apache.curator.x.discovery.ServiceDiscoveryBuilder;
 import org.apache.curator.x.discovery.ServiceInstance;
 import org.apache.curator.x.discovery.ServiceType;
 import org.apache.curator.x.discovery.UriSpec;
-import org.apache.curator.x.discovery.details.ServiceCacheListener;
 import org.eclipse.jetty.alpn.ALPN;
 import org.eclipse.jetty.alpn.server.ALPNServerConnectionFactory;
 import org.eclipse.jetty.annotations.AnnotationConfiguration;
@@ -39,10 +38,13 @@ import org.eclipse.jetty.webapp.MetaInfConfiguration;
 import org.eclipse.jetty.webapp.WebAppContext;
 import org.eclipse.jetty.webapp.WebInfConfiguration;
 import org.eclipse.jetty.webapp.WebXmlConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.io.Files;
 
 public class Main {
+	private static final Logger logger = LoggerFactory.getLogger(Main.class);
 	private static String PROPERTY_FILE = "wts.properties";
 
 	public static void main(String[] args) throws Exception {
@@ -51,7 +53,7 @@ public class Main {
 		InputStream input = classLoader.getResourceAsStream(PROPERTY_FILE);
 
 		if (input == null) {
-			System.err.println("Couldn't find " + PROPERTY_FILE);
+			logger.error("Couldn't find " + PROPERTY_FILE);
 		}
 		Properties properties = new Properties();
 		properties.load(input);
@@ -125,7 +127,6 @@ public class Main {
 		context.setContextPath("/");
 
 		String url = Main.class.getProtectionDomain().getCodeSource().getLocation().toString();
-		System.out.println("URL URL URL url = " + url);
 		String jarRegex = ".*" + Files.getNameWithoutExtension(url) + "\\." + Files.getFileExtension(url);
 		context.setAttribute("org.eclipse.jetty.server.webapp.ContainerIncludeJarPattern", jarRegex);
 		context.setParentLoaderPriority(true);
@@ -134,7 +135,7 @@ public class Main {
 
 		server.start();
 
-		server.dump(System.err);
+//		server.dump(System.err);
 
 		try (CuratorFramework curatorFramework = CuratorFrameworkFactory.newClient(System.getProperty("zookeeper.hosts"),
 				new RetryNTimes(3, 1000))) {
@@ -150,7 +151,7 @@ public class Main {
 
 
 				sd.start();
-				sd.queryForInstances("wts").stream().forEach((e) -> System.out.println("found = " + e));
+				sd.queryForInstances("wts").stream().forEach((e) -> logger.info("found = " + e));
 				
 				server.join();
 			}
