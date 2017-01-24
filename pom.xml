@@ -10,8 +10,24 @@
 		<alpn-api-version>1.1.2.v20150522</alpn-api-version>
 		<alpn-boot-version>8.1.6.v20151105</alpn-boot-version>
 		<jetty-version>9.3.6.v20151106</jetty-version>
+		<jersey.version>1.19.3</jersey.version>
+		<curation.version>2.11.1</curation.version>
 	</properties>
 	<dependencies>
+		<!-- https://mvnrepository.com/artifact/org.apache.curator/curator-framework -->
+		<dependency>
+			<groupId>org.apache.curator</groupId>
+			<artifactId>curator-framework</artifactId>
+			<version>${curation.version}</version>
+		</dependency>
+
+
+		<!-- https://mvnrepository.com/artifact/org.apache.curator/curator-x-discovery -->
+		<dependency>
+			<groupId>org.apache.curator</groupId>
+			<artifactId>curator-x-discovery</artifactId>
+			<version>${curation.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>javax.servlet-api</artifactId>
