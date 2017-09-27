@@ -4,11 +4,33 @@
 	<groupId>wts</groupId>
 	<artifactId>wts</artifactId>
 	<version>1-SNAPSHOT</version>
+	<packaging>jar</packaging>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<jetty-version>9.4.7.v20170914</jetty-version>
+		<alpn-api-version>1.1.2.v20150522</alpn-api-version>
+		<alpn-boot-version>8.1.6.v20151105</alpn-boot-version>
+		<jersey.version>1.19.3</jersey.version>
+		<curation.version>2.11.1</curation.version>
+		<logback.version>1.2.3</logback.version>
+		<slf4j-api.version>1.7.25</slf4j-api.version>
+		<hdr-histogram.version>2.1.10</hdr-histogram.version>
 	</properties>
 	<dependencies>
+		<!-- https://mvnrepository.com/artifact/org.apache.curator/curator-framework -->
+		<dependency>
+			<groupId>org.apache.curator</groupId>
+			<artifactId>curator-framework</artifactId>
+			<version>${curation.version}</version>
+		</dependency>
+
+
+		<!-- https://mvnrepository.com/artifact/org.apache.curator/curator-x-discovery -->
+		<dependency>
+			<groupId>org.apache.curator</groupId>
+			<artifactId>curator-x-discovery</artifactId>
+			<version>${curation.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>javax.servlet-api</artifactId>
@@ -16,7 +38,23 @@
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
-			<artifactId>jetty-webapp</artifactId>
+			<artifactId>jetty-server</artifactId>
+			<version>${jetty-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.mortbay.jetty.alpn</groupId>
+			<artifactId>alpn-boot</artifactId>
+			<version>${alpn-boot-version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-alpn-server</artifactId>
+			<version>${jetty-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.jetty.http2</groupId>
+			<artifactId>http2-server</artifactId>
 			<version>${jetty-version}</version>
 		</dependency>
 		<dependency>
@@ -25,8 +63,18 @@
 			<version>${jetty-version}</version>
 		</dependency>
 		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-webapp</artifactId>
+			<version>${jetty-version}</version>
+		</dependency>
+		<dependency>
 			<groupId>org.eclipse.jetty.websocket</groupId>
-			<artifactId>javax-websocket-server-impl</artifactId>
+			<artifactId>websocket-api</artifactId>
+			<version>${jetty-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.jetty.websocket</groupId>
+			<artifactId>websocket-server</artifactId>
 			<version>${jetty-version}</version>
 		</dependency>
 		<dependency>
@@ -36,37 +84,22 @@
 		</dependency>
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-core</artifactId>
-			<version>1.2.3</version>
-		</dependency>
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
-			<version>1.2.3</version>
+			<version>${logback.version}</version>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
-		<dependency>
+				<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
-			<version>1.7.25</version>
+			<version>${slf4j-api.version}</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.hdrhistogram/HdrHistogram -->
 		<dependency>
 			<groupId>org.hdrhistogram</groupId>
 			<artifactId>HdrHistogram</artifactId>
-			<version>2.1.10</version>
+			<version>${hdr-histogram.version}</version>
 		</dependency>
-
 	</dependencies>
 	<build>
-		<resources>
-			<resource>
-				<directory>src/main/webapp</directory>
-			</resource>
-			<resource>
-				<directory>src/main/resources</directory>
-			</resource>
-		</resources>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -79,21 +112,59 @@
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-shade-plugin</artifactId>
-				<version>2.4.1</version>
+				<artifactId>maven-enforcer-plugin</artifactId>
+				<version>1.1.1</version>
 				<executions>
 					<execution>
-						<phase>package</phase>
+						<id>enforce-java</id>
 						<goals>
-							<goal>shade</goal>
+							<goal>enforce</goal>
 						</goals>
 						<configuration>
-							<transformers>
-								<transformer
-									implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-									<mainClass>wts.Main</mainClass>
-								</transformer>
-							</transformers>
+							<rules>
+								<requireMavenVersion>
+									<version>[3.0.0,)</version>
+								</requireMavenVersion>
+								<requireJavaVersion>
+									<version>[1.8,)</version>
+									<message>[ERROR] OLD JDK [${java.version}] in use.
+										Jetty
+										${jetty-version} requires JDK 1.8 or newer</message>
+								</requireJavaVersion>
+							</rules>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.6</version>
+				<configuration>
+					<archive>
+						<manifest>
+							<mainClass>wts.Main</mainClass>
+							<addClasspath>true</addClasspath>
+							<classpathPrefix>libs/</classpathPrefix>
+						</manifest>
+					</archive>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>2.10</version>
+				<executions>
+					<execution>
+						<id>copy-main-deps</id>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.build.directory}/libs</outputDirectory>
+							<overWriteRelease>false</overWriteRelease>
+							<overWriteSnapshots>false</overWriteSnapshots>
+							<overWriteIfNewer>true</overWriteIfNewer>
 						</configuration>
 					</execution>
 				</executions>
@@ -101,25 +172,23 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>exec-maven-plugin</artifactId>
+				<version>1.4.0</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>exec</goal>
+						</goals>
+					</execution>
+				</executions>
 				<configuration>
 					<executable>java</executable>
 					<arguments>
+						<argument>-Xbootclasspath/p:target/libs/alpn-boot-${alpn-boot-version}.jar</argument>
 						<argument>-jar</argument>
-						<argument>target/wts-1-SNAPSHOT.jar</argument>
-						<argument>wts.Main</argument>
+						<argument>target/${project.artifactId}-${project.version}.jar</argument>
 					</arguments>
 				</configuration>
 			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-eclipse-plugin</artifactId>
-				<version>2.10</version>
-				<configuration>
-					<downloadSources>true</downloadSources>
-					<downloadJavadocs>true</downloadJavadocs>
-				</configuration>
-			</plugin>
 		</plugins>
-
 	</build>
 </project>

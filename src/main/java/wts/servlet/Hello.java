@@ -1,6 +1,8 @@
 package wts.servlet;
 
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
@@ -19,8 +21,17 @@ public class Hello extends HttpServlet {
         ServletOutputStream out = resp.getOutputStream();
         
         out.write("Hello Toaler".getBytes("UTF-8"));
+        out.write(String.format("%s:%s", "IP Address", getIpAddress()).getBytes("UTF-8"));
         out.flush();
         out.close();
     }
+	
+	private String getIpAddress() {
+		try {
+			return InetAddress.getLocalHost().getHostAddress();
+		} catch (UnknownHostException e) {
+			return "Couldn't be determined";
+		}
+	}
     
 }
