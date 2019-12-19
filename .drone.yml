@@ -1,0 +1,4 @@
+pipeline:
+ build:
+   image: adoptopenjdk/maven-openjdk11
+   commands: mvn package -DskipTests=true
