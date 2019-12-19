@@ -3,6 +3,6 @@ name: default
 
 steps:
 - name: frontend
-  image: adoptopenjdk/maven-openjdk11
+  image: azul/zulu-openjdk-alpine:13
   commands:
   - mvn package -DskipTests=true
