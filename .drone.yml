@@ -9,7 +9,7 @@ steps:
 - name: docker  
   image: plugins/docker
   settings:
-    repo: toaler
+    repo: toaler/web-tech-stack
     username:
       from_secret: docker_username
     password:
