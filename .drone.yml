@@ -10,7 +10,6 @@ steps:
   image: plugins/docker
   settings:
     repo: toaler/web-tech-stack
-    auto_tag: true
     tags:
      - '0.1'
     username:
