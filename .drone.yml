@@ -10,6 +10,7 @@ steps:
   image: plugins/docker
   settings:
     repo: toaler/web-tech-stack
+    auto_tag: true
     username:
       from_secret: dockerhub_username
     password:
