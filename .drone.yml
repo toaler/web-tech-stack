@@ -6,6 +6,7 @@ steps:
   image: adoptopenjdk/maven-openjdk11
   commands:
   - mvn package -DskipTests=false
+  - echo -n "0.1.0" > .tags
 - name: docker  
   image: plugins/docker
   settings:
