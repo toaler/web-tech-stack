@@ -5,4 +5,4 @@ steps:
 - name: frontend
   image: adoptopenjdk/maven-openjdk11
   commands:
-  - mvn package -DskipTests=true
+  - mvn package -DskipTests=false
