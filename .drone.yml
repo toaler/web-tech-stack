@@ -6,3 +6,13 @@ steps:
   image: adoptopenjdk/maven-openjdk11
   commands:
   - mvn package -DskipTests=false
+
+steps:
+- name: docker  
+  image: plugins/docker
+  settings:
+    repo: foo/bar
+    username:
+      from_secret: docker_username
+    password:
+      from_secret: docker_password
